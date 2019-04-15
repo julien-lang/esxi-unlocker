@@ -39,10 +39,13 @@ FILENAME = 'esxi-unlocker-300.tgz'
 
 TIMESTAMP = '{:%Y%m%d%H%M.%S}'.format(datetime.datetime.now())
 TOUCH = 'touch -t ' + TIMESTAMP
-GTARUNLOCKER = '/usr/local/bin/gtar czvf unlocker.tgz etc'
-GTARDISTRIB = '/usr/local/bin/gtar czvf ' + FILENAME + \
+GTARUNLOCKER = 'tar czvf unlocker.tgz etc'
+GTARDISTRIB = 'tar czvf ' + FILENAME + \
               ' unlocker.tgz esxi-install.sh esxi-uninstall.sh esxi-smctest.sh readme.txt'
 
+if sys.platform == 'darwin':
+    GTARUNLOCKER = "/usr/local/bin/g" + GTARUNLOCKER
+    GTARDISTRIB = "/usr/local/bin/g" + GTARDISTRIB
 
 def main():
 
@@ -68,8 +71,9 @@ def main():
 
 
 if __name__ == '__main__':
-    if sys.platform == 'darwin':
-        print('ESXi-Build for macOS')
-        main()
-    else:
-        print('ESXi-Build only supported on macOS')
+    if sys.platform != 'darwin' and not sys.platform.startswith("linux"):
+        print('ESXi-Build only supported on macOS or Linux')
+        sys.exit(1)
+
+    print('ESXi-Build for macOS')
+    main()
